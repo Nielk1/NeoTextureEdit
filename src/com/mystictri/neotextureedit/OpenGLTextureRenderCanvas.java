@@ -8,6 +8,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -376,8 +377,7 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		u.cross_ip(UP, w);
 		u.normalize();
 		v.cross_ip(w, u);
-		
-		
+
 		m_CamONB.put(0, u.x);
 		m_CamONB.put(1, u.y);
 		m_CamONB.put(2, u.z);
@@ -387,9 +387,9 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		m_CamONB.put(6, w.x);
 		m_CamONB.put(7, w.y);
 		m_CamONB.put(8, w.z);
-		
-		eye.mult_add_ip(params.camDist.get(), w);
 
+		eye.mult_add_ip(params.camDist.get(), w);
+		
 		ARBShaderObjects.glUniform3fARB(u_WS_EyePos_loc, eye.x, eye.y, eye.z);
 		ARBShaderObjects.glUniformMatrix3ARB(u_CameraONB_loc, false, m_CamONB);
 	}
@@ -519,15 +519,18 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 
 		mouseOX = e.getX();
 		mouseOY = e.getY();
-		
-		if (e.isShiftDown()) {
+
+    	if ((mouseButton == MouseEvent.BUTTON1 && e.isShiftDown())
+          || mouseButton == MouseEvent.BUTTON3 ) {
 			params.camDist.increment(dy/10.0f);
-		} else {
+		} else if (mouseButton == MouseEvent.BUTTON1) {
 			params.rotX.increment(dy);
 			params.rotY.increment(-dx);
 			
 			if (params.rotY.get() >= 360) params.rotY.increment(-360);
 			if (params.rotY.get() < 0) params.rotY.increment(360);
+		} else if (mouseButton == MouseEvent.BUTTON2 ) {
+
 		}
 		
 		repaint();
@@ -570,7 +573,7 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 	}
 	
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		int dr = e.getWheelRotation();
+		float dr = (float)e.getPreciseWheelRotation();
 
 		params.camDist.increment(dr/10.0f);
 

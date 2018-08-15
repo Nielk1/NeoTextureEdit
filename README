@@ -47,7 +47,7 @@ Release Notes:
 ==============
 
 0.6.7-devel:
- - added mouse wheel zoom to 3d preview
+ - zoom now supports right click drag and mouse wheel
 
 0.6.6-devel:
  - merged several forks, changes:
