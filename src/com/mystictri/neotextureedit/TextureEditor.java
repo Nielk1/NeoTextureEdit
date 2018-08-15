@@ -637,6 +637,7 @@ public class TextureEditor implements ActionListener {
 		m_MainMenuBar.add(options);
 		createCheckboxMenuItem(options, "Use Cache", "options_toggle_usecache", 'C', null, ChannelUtils.useCache);
 		createCheckboxMenuItem(options, "Normal FlipX", "options_toggle_normalFlipX", 'X', null, FilterNormalMap.ms_FlipX);
+		createCheckboxMenuItem(options, "Normal FlipY", "options_toggle_normalFlipY", 'Y', null, FilterNormalMap.ms_FlipY);
 
 		JMenu help = new JMenu("Help");
 		help.setMnemonic('H');
@@ -736,6 +737,11 @@ public class TextureEditor implements ActionListener {
 				m_OpenGLPreviewPanel.channelChanged(null);
 		} else if (c.equals("options_toggle_normalFlipX")) {
 			FilterNormalMap.ms_FlipX = !FilterNormalMap.ms_FlipX;
+			m_GraphDrawPanel.updateAll();
+			if (GL_ENABLED)
+				m_OpenGLPreviewPanel.channelChanged(null);
+		} else if (c.equals("options_toggle_normalFlipY")) {
+			FilterNormalMap.ms_FlipY = !FilterNormalMap.ms_FlipY;
 			m_GraphDrawPanel.updateAll();
 			if (GL_ENABLED)
 				m_OpenGLPreviewPanel.channelChanged(null);
