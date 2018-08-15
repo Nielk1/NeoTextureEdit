@@ -2,13 +2,8 @@ NeoTextureEdit2
 ===============
 
 This project is a fork of the NeoTextureEdit project, which has seemingly been abandonen/forgotten by its creators.
-NeoTextureEdit2 is an attempt to improve NeoTextureEdit. Currently, the only improvement that has been
-implementeed thus far is:
+NeoTextureEdit2 is an attempt to improve NeoTextureEdit.
 
-- Instead of using JFileChooser for choosing files, FileDialog is now used instead. Because quite frankly,
-JFileChooser is fucking terrible to use. 
-
---------
 
 How to use the program
 ===============
@@ -48,20 +43,31 @@ from where you start the editor.  This file also contains your pattern
 presets. Deleting this file resets to the factory settings.
 
 
-
-Running NeoTextureEdit:
-=======================
-
-Linux: Use the provided shell script in the main directory to run
-       NeoTextureEdit.
-
-Windows: Use the provided executable to start.
-
-MacOS: The application can be started via double-click in the finder.
-
-
 Release Notes:
 ==============
+
+0.6.6-devel:
+ - merged several forks, changes:
+   - Eric Arnebäck
+     - Switched from lwjgl-2.9.1 to lwjgl-2.9.2
+     - Replaced JFileChooser with FileDialog
+     - fixed so that the program actually uses the spectral control values that has been saved in the tgr file.
+   - Lawrence D'Oliveiro
+     - include and update Linux launcher shell script from distribution tarball
+     - correct path to examples directory
+   - Jester
+     - Fixed AbstractParameterEditor painting bug
+     - AbstractParameterEditor super class now handles boilerplate painting
+   - Holger Dammertz
+     - fixed issue that spectralControl with start 1 end 8 did not apply default persistence
+     - added simple script to create a version number
+     - added RGBEImage class for Radiance .hdr format
+     - added option to flip x direction of normal map
+     - added keyboard scrolling to graph panel
+     - added automatic preview-update after changing normal map orientation
+   - John Klein
+     - Replaced additional JFileChooser with FileDialog
+     - Created Windows launch script
 
 0.6.5-devel:
  - added basic keyboard scrolling to canvas
