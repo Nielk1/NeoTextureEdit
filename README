@@ -49,6 +49,7 @@ Release Notes:
 0.6.7-devel:
  - zoom now supports right click drag and mouse wheel
  - eclipse project created
+ - added toggle for normal map flip-y 
 
 0.6.6-devel:
  - merged several forks, changes:
