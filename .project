@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>NeoTextureEdit2</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>ant_bin</name>
+			<type>2</type>
+			<location>E:/Programming/Tools/NeoTextureEdit2/ant_bin</location>
+		</link>
+		<link>
+			<name>src</name>
+			<type>2</type>
+			<location>E:/Programming/Tools/NeoTextureEdit2/src</location>
+		</link>
+	</linkedResources>
+</projectDescription>
