@@ -1001,7 +1001,7 @@ public class TextureEditor implements ActionListener, KeyListener {
 				setCurrentFileName(null);
 			}
 		} else {
-			setCurrentFileName(preferences.get("m_CurrentFileName", "examples/example_Bricks.tgr"));
+			setCurrentFileName(preferences.get("m_CurrentFileName", "data/examples/example_Bricks.tgr"));
 			if (m_CurrentFile.equals("null"))
 				setCurrentFileName(null);
 			else if (!m_GraphDrawPanel.load(m_CurrentFile.getAbsolutePath(), true)) {
