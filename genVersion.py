@@ -10,7 +10,7 @@ out, err = p.communicate()
 version = out.strip()
 newStringJava  = '''package com.mystictri.neotexture;
 public final class TextureVersion {
-    public static final String version = "0.6.6-devel-''' + version.hex() + '''";
+    public static final String version = "0.6.7-devel-''' + version.hex() + '''";
 }
 ''' 
 

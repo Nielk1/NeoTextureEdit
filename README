@@ -46,6 +46,9 @@ presets. Deleting this file resets to the factory settings.
 Release Notes:
 ==============
 
+0.6.7-devel:
+ - added mouse wheel zoom to 3d preview
+
 0.6.6-devel:
  - merged several forks, changes:
    - Eric Arnebäck
@@ -65,7 +68,7 @@ Release Notes:
      - added option to flip x direction of normal map
      - added keyboard scrolling to graph panel
      - added automatic preview-update after changing normal map orientation
-   - John Klein
+   - John "Nielk1" Klein
      - Replaced additional JFileChooser with FileDialog
      - Created Windows launch script
 

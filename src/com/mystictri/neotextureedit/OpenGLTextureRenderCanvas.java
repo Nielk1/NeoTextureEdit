@@ -4,7 +4,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +46,7 @@ import engine.parameters.ParamChangeListener;
  * @author Holger Dammertz
  *
  */
-class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseListener, MouseMotionListener, KeyListener, ParamChangeListener {
+class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseListener, MouseWheelListener, MouseMotionListener, KeyListener, ParamChangeListener {
 	private static final long serialVersionUID = -1713673512688807546L;
 	
 	static final boolean USE_THREAD = true; // This is a temp variable to experiment with a thread for rendering vs. selective repaint on mouse clicks (the second
@@ -245,6 +247,7 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		
 		addMouseMotionListener(this);
 		addMouseListener(this);
+		addMouseWheelListener(this);
 		addKeyListener(this);
 		
 		for (AbstractParam p : params.m_LocalParameters) {
@@ -566,6 +569,13 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 	public void mouseReleased(MouseEvent e) {
 	}
 	
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		int dr = e.getWheelRotation();
+
+		params.camDist.increment(dr/10.0f);
+
+		repaint();
+	}
 	
 	public int genTexID() {
 		IntBuffer i = Utils.allocIntBuffer(1);
