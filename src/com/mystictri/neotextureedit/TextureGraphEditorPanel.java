@@ -30,6 +30,7 @@ import java.awt.RenderingHints;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -377,9 +378,11 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 	
 	
 	private void askFileAndExportTexture(int resX, int resY) {
-		TextureEditor.INSTANCE.m_TextureFileChooser_SaveLoadImage.setDialogTitle("Export Texture to " + resX + "x" + resY + " Image...");
-		if (TextureEditor.INSTANCE.m_TextureFileChooser_SaveLoadImage.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-			String name = TextureEditor.INSTANCE.m_TextureFileChooser_SaveLoadImage.getSelectedFile().getAbsolutePath();
+		FileDialog c = TextureEditor.INSTANCE.m_TextureFileChooser_SaveLoadImage;
+		c.setTitle("Export Texture to " + resX + "x" + resY + " Image...");
+		c.setVisible(true);
+		if (c.getFile() != null) {
+			String name = TextureEditor.getFullPath(c);
 			if (!name.endsWith(".png"))
 				name += ".png";
 			boolean useCache = ChannelUtils.useCache;

@@ -1027,7 +1027,7 @@ public class TextureEditor implements ActionListener {
 		UIManager.put("OptionPane.messageFont", new FontUIResource(new Font("Monospaced", Font.PLAIN, 12)));
 
 		// !!TODO: move the libs into the native directory?
-		System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/lib/lwjgl-2.9.1/native/");
+		System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/native/");
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
