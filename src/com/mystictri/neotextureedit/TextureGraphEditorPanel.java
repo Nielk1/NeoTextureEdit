@@ -700,7 +700,7 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 	float zoom = 1.0f;
 	
 	public void paint(Graphics gr) {
-//		super.paint(gr);
+		super.paint(gr);	// AbstractParameterEditor now handles painting boilerplate (all 4 lines...)
 		
 		if (canvas == null || (int)(getWidth()*zoom) != canvas.getWidth() || (int)(getHeight()*zoom) != canvas.getHeight()) {
 			canvas = new BufferedImage((int)(getWidth()*zoom), (int)(getHeight()*zoom), BufferedImage.TYPE_INT_RGB);

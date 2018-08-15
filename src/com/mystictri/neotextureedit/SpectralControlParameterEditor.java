@@ -53,9 +53,7 @@ public class SpectralControlParameterEditor extends AbstractParameterEditor impl
 	
 	
 	public void paint(Graphics g) {
-		super.paint(g);
-		
-		g.clearRect(0, 0, getWidth(), getHeight());
+		super.paint(g);	// AbstractParameterEditor now handles painting boilerplate (all 4 lines...)
 		
 		int num = m_Param.getEndBand() - m_Param.getStartBand() + 1;
 		

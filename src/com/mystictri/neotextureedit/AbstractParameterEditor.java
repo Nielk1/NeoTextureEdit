@@ -18,6 +18,7 @@
 package com.mystictri.neotextureedit;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
@@ -38,5 +39,16 @@ class AbstractParameterEditor extends JPanel {
 		setPreferredSize(new Dimension(NAME_WIDTH + 2*BUTTON_WIDTH + TEXTFIELD_WIDTH, h));
 		setSize(getPreferredSize());
 		setLayout(null);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		g.clearRect(0, 0, getWidth(), getHeight());
+		
+		this.paintComponents(g);
+		this.paintBorder(g);
+		this.paintChildren(g);
 	}
 }
