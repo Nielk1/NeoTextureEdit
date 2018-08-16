@@ -242,9 +242,13 @@ public abstract class Channel extends LocalParameterManager {
 			String t;
 			while (!(t = s.next()).equals("endparameters")) {
 				AbstractParam param;
-				if ((param = c.getParamByName(t.replace('_', ' '))) != null) {
-					param.load(s);
-				} else {
+				try {
+					if ((param = c.getParamByName(t.replace('_', ' '))) != null) {
+						param.load(s);
+					} else {
+						Logger.logWarning(null, " loading of param " + t + " failed.");
+					}
+				} catch(Exception ex) {
 					Logger.logWarning(null, " loading of param " + t + " failed.");
 				}
 			}

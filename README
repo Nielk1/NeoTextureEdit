@@ -44,9 +44,10 @@ Release Notes:
  - eclipse project created
  - added toggle for normal map flip-y
  - moved normal flipping to per-filter properties
- - encapsilated shader logic
+ - encapsulated shader logic
  - added min and max clamps to Math1 filter
  - added brighten and darken to blend filter
+ - fixed collision on parameter A of FilterMath1, FilterMath1 will also now skip deserialization failures
 
 0.6.6-devel:
  - merged several forks, changes:

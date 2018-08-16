@@ -8,7 +8,7 @@ import engine.parameters.EnumParam;
 import engine.parameters.FloatParam;
 
 public class FilterMath1 extends Channel {
-	FloatParam A = CreateLocalFloatParam("A", 0.0f, -Float.MAX_VALUE, Float.MAX_VALUE).setDefaultIncrement(0.25f);
+	FloatParam A = CreateLocalFloatParam("A Value", 0.0f, -Float.MAX_VALUE, Float.MAX_VALUE).setDefaultIncrement(0.25f);
 	
 	EnumParam function = CreateLocalEnumParam("Function", "I + a,I * a,a - I,I ^ a");
 	
