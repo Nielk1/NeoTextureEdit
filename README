@@ -50,7 +50,9 @@ Release Notes:
  - zoom now supports right click drag and mouse wheel
  - eclipse project created
  - added toggle for normal map flip-y
- - moved normal flipping to per-filter properties 
+ - moved normal flipping to per-filter properties
+ - encapsilated shader logic
+ - added min and max clamps to Math1 filter
 
 0.6.6-devel:
  - merged several forks, changes:

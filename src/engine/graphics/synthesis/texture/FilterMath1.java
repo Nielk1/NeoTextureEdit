@@ -16,7 +16,12 @@ public class FilterMath1 extends Channel {
 	BoolParam onG = CreateLocalBoolParam("G", true);
 	BoolParam onB = CreateLocalBoolParam("B", true);
 	BoolParam onA = CreateLocalBoolParam("A", false);
-
+	
+	FloatParam ClampMax = CreateLocalFloatParam("Clamp Max", 1f, -Float.MAX_VALUE, Float.MAX_VALUE).setDefaultIncrement(0.1f);
+	BoolParam EnableClampMax = CreateLocalBoolParam("Enable Clamp Max", false);
+	FloatParam ClampMin = CreateLocalFloatParam("Clamp Min", 0f, -Float.MAX_VALUE, Float.MAX_VALUE).setDefaultIncrement(0.1f);
+	BoolParam EnableClampMin = CreateLocalBoolParam("Enable Clamp Min", false);
+	
 	public String getName() {
 		return "Math1";
 	}
@@ -41,15 +46,21 @@ public class FilterMath1 extends Channel {
 	
 	float apply(float I) {
 		float a = A.get();
+		float retVal = I;
 		switch (function.getEnumPos()) {
-			case 0: return I + a;
-			case 1: return I * a;
-			case 2: return a - I;
-			case 3: return FMath.pow(I, a);
+			case 0: retVal = I + a; break;
+			case 1: retVal = I * a; break;
+			case 2: retVal = a - I; break;
+			case 3: retVal = FMath.pow(I, a); break;
 			default:
 				System.err.println("Invalid function selector in " + this);
-				return I;
+				retVal = I; break;
 		}
+		if(EnableClampMax.get())
+			retVal = Math.min(retVal, ClampMax.get());
+		if(EnableClampMin.get())
+			retVal = Math.max(retVal, ClampMin.get());
+		return retVal;
 	}
 
 	private final Vector4 _function(Vector4 in0, float u, float v) {
