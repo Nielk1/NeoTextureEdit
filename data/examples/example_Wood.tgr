@@ -43,4 +43,4 @@ ExportName "" Strength 1.0 endparameters
 0 4 0
 7 9 0
 #EndConnections
-glpreview 4 9 -1 2 Object 0 Spec._Power 60.0 POM_Strength 0.125 Ambient 0.125 TexScale_U 2 TexScale_V 2 CamRotX 37.0 CamRotY 332.0 CamDist 2.1000001 endglpreview
+glpreview 4 9 -1 2 Object 0 glshader Spec._Power 60.0 POM_Strength 0.125 Ambient 0.125 TexScale_U 2 TexScale_V 2 endglshader CamRotX 37.0 CamRotY 332.0 CamDist 2.1000001 endglpreview

@@ -60,4 +60,4 @@ ExportName "%f_n" Strength 0.5 endparameters
 3 4 1
 6 13 0
 #EndConnections
-glpreview 12 13 6 -1 Object 0 Spec._Power 10.0 POM_Strength 0.0 Ambient 0.375 TexScale_U 2 TexScale_V 2 CamRotX 24.0 CamRotY 332.0 CamDist 2.1000001 endglpreview
+glpreview 12 13 6 -1 Object 0 glshader Spec._Power 10.0 POM_Strength 0.0 Ambient 0.375 TexScale_U 2 TexScale_V 2 endglshader CamRotX 24.0 CamRotY 332.0 CamDist 2.1000001 endglpreview

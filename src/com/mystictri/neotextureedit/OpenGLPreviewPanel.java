@@ -153,52 +153,21 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		int y = 8;
 		
 	/*
-	 *  TODO: HERE YOU CAN ADD A BUTTON MOTHERFUCKER
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
-	 *  
+	 *  TODO: HERE YOU CAN ADD A BUTTON (what button?)
 	 */
 		int oldNameWidth = AbstractParameterEditor.NAME_WIDTH;
 		AbstractParameterEditor.NAME_WIDTH = 128;
 		for (AbstractParam param : glcanvas.params.m_LocalParameters) {
+			if (param.hidden) continue;
+			Component c = getEditorForParam(param);
+			if (c != null) {
+				c.setLocation(x, y); y += c.getHeight();
+				parameterPanel.add(c);
+			} else {
+				Logger.logWarning(this, "Could not create an editor for parameter " + param.getName());
+			}
+		}
+		for (AbstractParam param : glcanvas.GetShaderParamaters().m_LocalParameters) {
 			if (param.hidden) continue;
 			Component c = getEditorForParam(param);
 			if (c != null) {
@@ -252,6 +221,12 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 				w.write(p.getName().replace(' ', '_') + " ");
 				p.save(w);
 			}
+			w.write("glshader ");
+			for (AbstractParam p : glcanvas.GetShaderParamaters().m_LocalParameters) {
+				w.write(p.getName().replace(' ', '_') + " ");
+				p.save(w);
+			}
+			w.write("endglshader ");
 		}
 		
 		w.write("endglpreview\n");
@@ -271,11 +246,22 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		String t;
 		while (!(t = s.next()).equals("endglpreview")) {
 			if (TextureEditor.GL_ENABLED) {
-				AbstractParam param;
-				if ((param = glcanvas.params.getParamByName(t.replace('_', ' '))) != null) {
-					param.load(s);
+				if (t.equals("glshader")) {
+					while (!(t = s.next()).equals("endglshader")) {
+						AbstractParam param;
+						if ((param = glcanvas.GetShaderParamaters().getParamByName(t.replace('_', ' '))) != null) {
+							param.load(s);
+						} else {
+							Logger.logWarning(null, " loading of param " + t + " failed.");
+						}
+					}
 				} else {
-					Logger.logWarning(null, " loading of param " + t + " failed.");
+					AbstractParam param;
+					if ((param = glcanvas.params.getParamByName(t.replace('_', ' '))) != null) {
+						param.load(s);
+					} else {
+						Logger.logWarning(null, " loading of param " + t + " failed.");
+					}
 				}
 			}
 		}
