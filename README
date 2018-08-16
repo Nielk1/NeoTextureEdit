@@ -1,13 +1,6 @@
-NeoTextureEdit2
-===============
+NeoTextureEdit
+==============
 
-This project is a fork of the NeoTextureEdit project, which has seemingly been abandonen/forgotten by its creators.
-NeoTextureEdit2 is an attempt to improve NeoTextureEdit.
-
-
-How to use the program
-===============
-=======
 NeoTexture Library.
 ===================
 
@@ -99,12 +92,3 @@ Release Notes:
  - Combine Filter to select arbitrary RGBA channels
  - small UI Improvements (Selection of multiple nodes and nicer rendering)
  - Cache System Rewrite
-
- 
--------------
-
-In the OpenGL preview pane(the bottommost panel), you can zoom in and out by holding in the shift key and the left mouse button and then moving around the mouse.
-
-In the Texture Graph panel(the centremost panel), you can move around by holding the middle mouse button and 
-moving the mouse. If you are using a laptop and don't have a middle mouse button, you can instead hold down
-the control key and the left mouse button, and then move around the mouse. 
