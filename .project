@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>NeoTextureEdit2</name>
+	<name>NeoTextureEdit</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -18,12 +18,12 @@
 		<link>
 			<name>ant_bin</name>
 			<type>2</type>
-			<location>E:/Programming/Tools/NeoTextureEdit2/ant_bin</location>
+			<location>E:/Programming/Tools/NeoTextureEdit/ant_bin</location>
 		</link>
 		<link>
 			<name>src</name>
 			<type>2</type>
-			<location>E:/Programming/Tools/NeoTextureEdit2/src</location>
+			<location>E:/Programming/Tools/NeoTextureEdit/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
