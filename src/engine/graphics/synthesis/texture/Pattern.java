@@ -20,6 +20,7 @@ package engine.graphics.synthesis.texture;
 import engine.base.FMath;
 import engine.base.Vector3;
 import engine.base.Vector4;
+import engine.graphics.annotation.NodePattern;
 import engine.parameters.Matrix3x3Param;
 
 /**
@@ -28,6 +29,7 @@ import engine.parameters.Matrix3x3Param;
  * @author Holger Dammertz
  *
  */
+@NodePattern
 public class Pattern extends Channel {
 	
 	Matrix3x3Param transformation = CreateLocalMatrix3x3Param("Transformation");

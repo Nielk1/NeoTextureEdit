@@ -5,3 +5,4 @@ examples/
 ant_bin/
 *.jar
 src/com/mystictri/neotexture/TextureVersion.java
+/target

@@ -48,6 +48,8 @@ Release Notes:
  - added min and max clamps to Math1 filter
  - added brighten and darken to blend filter
  - fixed collision on parameter A of FilterMath1, FilterMath1 will also now skip deserialization failures
+ - added maven
+ - annotation based filter and pattern discovery
 
 0.6.6-devel:
  - merged several forks, changes:

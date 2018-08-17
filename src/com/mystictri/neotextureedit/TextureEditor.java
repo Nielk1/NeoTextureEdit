@@ -75,6 +75,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+
 import apple.dts.samplecode.osxadapter.OSXAdapter;
 
 import com.mystictri.neotexture.TextureGenerator;
@@ -82,6 +86,8 @@ import com.mystictri.neotexture.TextureGraphNode;
 import com.mystictri.neotexture.TextureVersion;
 
 import engine.base.Logger;
+import engine.graphics.annotation.NodeChannel;
+import engine.graphics.annotation.NodePattern;
 import engine.graphics.synthesis.texture.Channel;
 import engine.graphics.synthesis.texture.FilterNormalMap;
 import engine.graphics.synthesis.texture.Pattern;
@@ -189,47 +195,35 @@ public class TextureEditor implements ActionListener {
 	// + "Send comments, suggestions, bugs to holger.dammertz@googlemail.com";
 
 	private void tempTest_FindAllPatternsAndChannelClasses() {
-		String packName = Channel.class.getPackage().getName();
-		String[] files = null;
-		/*
-		 * String dir = "/" + packName.replace('.', '/'); try { URL url =
-		 * Channel.class.getResource(dir); if (url != null) { File f = new
-		 * File(url.toURI()); files = f.list(); } else
-		 */{
-			// System.err.println("WARNING: automatic loading of patterns/channels failed; adding hardcoded set");
-			String[] f = { "FilterBlend.class", "FilterColorCorrect.class", "FilterColorize.class", "FilterEmboss.class", "FilterMask.class",
-					"FilterNormalMap.class", "FilterWarp.class", "Pattern.class", "PatternBrick.class", "PatternCellular.class",
-					"PatternChecker.class", "PatternConstantColor.class", "PatternGradient.class", "PatternPerlinNoise.class",
-					"PatternTile.class", "PatternFunction.class", "PatternBitmap.class", "FilterIlluminate.class", "FilterCombine.class",
-					"FilterTransform.class", "FilterBlur.class", "FilterModulus.class", "FilterMath1.class" };
-			files = f;
-		}
+		 ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
 
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].endsWith(".class")) {
-				String className = files[i].substring(0, files[i].length() - 6);
-				try {
-					Class<?> c = Class.forName(packName + "." + className);
-					Object o = c.newInstance();
-					if (o instanceof Pattern) {
-						if (c != Pattern.class)
-							allPatterns.add(c);
-					} else if (o instanceof Channel)
-						allChannels.add(c);
+		 scanner.addIncludeFilter(new AnnotationTypeFilter(NodeChannel.class));
+		 scanner.addIncludeFilter(new AnnotationTypeFilter(NodePattern.class));
 
-					// output of loaded classes for easy copy-paste for jar
-					// version
-					// if (url != null)
-					// System.out.print("\"" + files[i] + "\",");
+		 for (BeanDefinition bd : scanner.findCandidateComponents("engine.graphics.synthesis.texture"))
+		 {
+			 String className = bd.getBeanClassName();
+			try {
+				Class<?> c = Class.forName(className);
+				Object o = c.newInstance();
+				if (o instanceof Pattern) {
+					if (c != Pattern.class)
+						allPatterns.add(c);
+				} else if (o instanceof Channel)
+					allChannels.add(c);
 
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// e.printStackTrace(); // happens because of possible
-					// abstract classes or interfaces
-				} catch (IllegalAccessException e) {
-					// e.printStackTrace(); also happens
-				}
+				// output of loaded classes for easy copy-paste for jar
+				// version
+				// if (url != null)
+				// System.out.print("\"" + files[i] + "\",");
+
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// e.printStackTrace(); // happens because of possible
+				// abstract classes or interfaces
+			} catch (IllegalAccessException e) {
+				// e.printStackTrace(); also happens
 			}
 			// Class.forName()
 		}

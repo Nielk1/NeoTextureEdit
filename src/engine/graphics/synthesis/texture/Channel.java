@@ -27,6 +27,7 @@ import java.util.Vector;
 import engine.base.FMath;
 import engine.base.Logger;
 import engine.base.Vector4;
+import engine.graphics.annotation.NodeChannel;
 import engine.graphics.synthesis.texture.CacheTileManager.TileCacheEntry;
 import engine.parameters.AbstractParam;
 import engine.parameters.LocalParameterManager;
@@ -39,6 +40,7 @@ import engine.parameters.TextParam;
  * @author Holger Dammertz
  * 
  */
+@NodeChannel
 public abstract class Channel extends LocalParameterManager {
 	HashMap<CacheTileManager.ResolutionTag, TileCacheEntry> cacheEntries = null;
 	
