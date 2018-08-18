@@ -31,7 +31,7 @@ import engine.parameters.FloatParam;
  */
 public final class FilterBlend extends Channel {
 	
-	EnumParam blendFunction = CreateLocalEnumParam("Layer Func.", "Normal,Multiply,Divide,Screen,Overlay,Dodge,Burn,Difference,Addition,Subtract,Brighten,Darken");
+	EnumParam blendFunction = CreateLocalEnumParam("Layer Func.", "Normal,Multiply,Divide,Screen,Overlay,Dodge,Burn,Difference,Addition,Subtract");
 	FloatParam opacity = CreateLocalFloatParam("Opacity", 1.0f, 0.0f, 1.0f).setDefaultIncrement(0.125f);
 	BoolParam invertAlpha = CreateLocalBoolParam("Inv. Alpha", false);
 	
@@ -108,16 +108,6 @@ public final class FilterBlend extends Channel {
 			color.add_ip(c0);
 		} else if (func == 9) { // Subtract
 			color.set(c0).sub_ip(c1);
-		} else if (func == 10) { // Brighten
-			color.w = c0.w > c1.w ? c0.w : c1.w;
-			color.x = c0.x > c1.x ? c0.x : c1.x;
-			color.y = c0.y > c1.y ? c0.y : c1.y;
-			color.z = c0.z > c1.z ? c0.z : c1.z;
-		} else if (func == 11) { // Darken
-			color.w = c0.w < c1.w ? c0.w : c1.w;
-			color.x = c0.x < c1.x ? c0.x : c1.x;
-			color.y = c0.y < c1.y ? c0.y : c1.y;
-			color.z = c0.z < c1.z ? c0.z : c1.z;
 		}
 		
 		color.clamp(0.0f, 1.0f);

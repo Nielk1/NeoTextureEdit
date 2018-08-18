@@ -53,7 +53,6 @@ public class Vector4 implements Serializable {
 		this.w = w;
 	}
 	
-	
 	public Vector4 set(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;
@@ -162,6 +161,22 @@ public class Vector4 implements Serializable {
 		w -= a * v.w;
 		return this;
 	}
+
+	public Vector4 max(Vector4 v) {
+		w = w > v.w ? w : v.w;
+		x = x > v.x ? x : v.x;
+		y = y > v.y ? y : v.y;
+		z = z > v.z ? z : v.z;
+		return this;
+	}
+	
+	public Vector4 min(Vector4 v) {
+		w = w < v.w ? w : v.w;
+		x = x < v.x ? x : v.x;
+		y = y < v.y ? y : v.y;
+		z = z < v.z ? z : v.z;
+		return this;
+	}
 	
 	public Vector4 abs_ip() {
 		x = FMath.abs(x);
@@ -179,6 +194,14 @@ public class Vector4 implements Serializable {
 		return this;
 	}
 	
+	public Vector4 sqrt_ip() {
+		x = FMath.sqrt(x);
+		y = FMath.sqrt(y);
+		z = FMath.sqrt(z);
+		w = FMath.sqrt(w);
+		return this;
+	}
+	
 	public Vector4 mult_ip(float f) {
 		x *= f;
 		y *= f;
@@ -186,7 +209,7 @@ public class Vector4 implements Serializable {
 		w *= f;
 		return this;
 	}
-
+	
 	public Vector4 multComp_ip(float a, float b, float c, float d) {
 		x *= a;
 		y *= b;
@@ -195,11 +218,36 @@ public class Vector4 implements Serializable {
 		return this;
 	}
 
-	public void multComp_ip(Vector4 v) {
+	public Vector4 multComp_ip(Vector4 v) {
 		x *= v.x;
 		y *= v.y;
 		z *= v.z;
 		w *= v.w;
+		return this;
+	}
+	
+	public Vector4 div_ip(float f) {
+		x /= f;
+		y /= f;
+		z /= f;
+		w /= f;
+		return this;
+	}
+	
+	public Vector4 divComp_ip(float a, float b, float c, float d) {
+		x /= a;
+		y /= b;
+		z /= c;
+		w /= d;
+		return this;
+	}
+
+	public Vector4 divComp_ip(Vector4 v) {
+		x /= v.x;
+		y /= v.y;
+		z /= v.z;
+		w /= v.w;
+		return this;
 	}
 	
 	public void clamp(float min, float max) {
