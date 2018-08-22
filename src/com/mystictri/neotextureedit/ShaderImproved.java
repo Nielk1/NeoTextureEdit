@@ -17,12 +17,13 @@ import engine.parameters.LocalParameterManager;
 import engine.parameters.ParamChangeListener;
 import engine.graphics.synthesis.texture.Channel;
 
-class ShaderBasic extends AbstractShader {
+class ShaderImproved extends AbstractShader {
 
 	int texidDiffuse = 0;
 	int texidNormal = 0;
 	int texidSpecWeight = 0;
 	int texidHeightmap = 0;
+	int texidEmissive = 0;
 	
 	int previewProgram = 0;
 	
@@ -32,6 +33,7 @@ class ShaderBasic extends AbstractShader {
 	int _2dNormalMap_loc;
 	int _2dSpecWeightMap_loc;
 	int _2dHeightMap_loc;
+	int _2dEmissiveMap_loc;
 	
 	int u_SpecularPower_loc;
 	int u_POM_Strength_loc;
@@ -76,12 +78,13 @@ class ShaderBasic extends AbstractShader {
 	// very basic preview shader
 	String previewFragmentShader = 
 		"uniform vec3 u_WS_EyePos; " +
- 		"uniform sampler2D _2dTex0; " +
+		"uniform sampler2D _2dTex0; " +
 		"uniform sampler2D _2dNormalMap; " +
 		"uniform sampler2D _2dSpecWeightMap; " +
 		"uniform sampler2D _2dHeightMap; " +
-		
- 		"varying vec3 v_WS_vertex; " +
+		"uniform sampler2D _2dEmissiveMap; " +
+
+		"varying vec3 v_WS_vertex; " +
 		"varying vec3 v_WS_normal; " +
 		"varying vec3 v_WS_tangent; " +
 		"" +
@@ -90,17 +93,23 @@ class ShaderBasic extends AbstractShader {
 		"uniform vec2 u_TexScale; " +
 		"uniform float u_Ambient; " +
 		"" +
- 		"void main(void){ " +
+
+		"void main(void){ " +
 		"	vec3 lightPos = vec3(20.0, 60.0, 40.0); " +
- 		"	vec3 lightDir = normalize(lightPos - v_WS_vertex); " +
- 		"	mat3 onb; " +
+
+		"	vec3 lightDir = normalize(lightPos - v_WS_vertex); " +
+
+		"	mat3 onb; " +
 		"	onb[2] = normalize(v_WS_normal); " +
 		"	onb[0] = normalize(v_WS_tangent - dot(onb[2], v_WS_tangent)*onb[2]); " +
 		"	onb[1] = cross(onb[2], onb[0]); " +
- 		"	vec3 rayDir = v_WS_vertex - u_WS_EyePos; " +
+
+		"	vec3 rayDir = v_WS_vertex - u_WS_EyePos; " +
 		"	vec3 eyeDir = normalize(rayDir * onb); " +
- 		"	vec3 pos = vec3(gl_TexCoord[0].xy * u_TexScale, 1.0); " +
- 		"   rayDir = eyeDir; " +
+
+		"	vec3 pos = vec3(gl_TexCoord[0].xy * u_TexScale, 1.0); " +
+
+		"   rayDir = eyeDir; " +
 		"   if (rayDir.z > 0.0) rayDir.z = -rayDir.z; " +
 		"	if (u_POM_Strength > 0.0) {" +
 		"     rayDir.z /= 0.25*u_POM_Strength; " +
@@ -111,15 +120,26 @@ class ShaderBasic extends AbstractShader {
 		"   	  pos += rayDir*0.001; " +
 		"     } " +
 		"   } " +
- 		"	vec3 normal = onb * normalize(texture2D(_2dNormalMap, pos.xy).rgb * 2.0 - 1.0); " +
- 		"	vec3 refl = reflect(lightDir, normal); " +
+
+		"	vec3 normal = onb * normalize(texture2D(_2dNormalMap, pos.xy).rgb * 2.0 - 1.0); " +
+
+		"	vec3 refl = reflect(lightDir, normal); " +
 		"	float SpecWeightyness = texture2D(_2dSpecWeightMap, pos.xy).x;" +
 		"	float spec = pow(max(dot(refl, eyeDir), 0.0), u_SpecularPower)*0.5*SpecWeightyness; " +
 		"	float diff = dot(lightDir, normal); " +
 		"	if (diff < 0.0) diff = 0.0; " +
-		"	diff = min(diff+u_Ambient, 1.0); " +
-		"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0) * diff + spec; " +
- 		"	gl_FragColor = color; " +
+		//"	diff = min(diff+u_Ambient, 1.0); " +
+		
+		"	vec4 emssvtxt = texture2D(_2dEmissiveMap, pos.xy); " +
+		"	diff = min(diff+u_Ambient+emssvtxt.a, 1.0); " +
+		//"	diff = min(u_Ambient+emssvtxt.a, 1.0); " +
+		
+		//"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0); " +
+		//"	color += vec4(emssvtxt.x, emssvtxt.y, emssvtxt.z, 0.0) * (emssvtxt.a); " +
+		
+		"	vec4 color = mix(texture2D(_2dTex0, pos.xy),emssvtxt,emssvtxt.a) * diff + spec; " +
+		//"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0) * diff + spec; " +
+		"	gl_FragColor = color; " +
 		"}";
 	
 	@Override
@@ -131,6 +151,7 @@ class ShaderBasic extends AbstractShader {
 		_2dNormalMap_loc  = getUniformLocation("_2dNormalMap", previewProgram);
 		_2dSpecWeightMap_loc  = getUniformLocation("_2dSpecWeightMap", previewProgram);
 		_2dHeightMap_loc  = getUniformLocation("_2dHeightMap", previewProgram);
+		_2dEmissiveMap_loc = getUniformLocation("_2dEmissiveMap", previewProgram);
 		
 		u_SpecularPower_loc = getUniformLocation("u_SpecularPower", previewProgram);
 		u_POM_Strength_loc = getUniformLocation("u_POM_Strength", previewProgram);
@@ -166,7 +187,8 @@ class ShaderBasic extends AbstractShader {
 	
 	@Override
 	public void UpdateEmissive(Channel _updateEmissive) {
-
+		if (_updateEmissive != null) update2dTexture(ChannelUtils.createAndComputeImage(_updateEmissive, TEXTURE_RESX, TEXTURE_RESY, null, 3), texidEmissive);
+		else update2dTexture_ConstanctColor(0x00000000, texidEmissive);
 	}
 
 	@Override
@@ -207,6 +229,11 @@ class ShaderBasic extends AbstractShader {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texidHeightmap);
 		ARBShaderObjects.glUniform1iARB(_2dHeightMap_loc, 3);	
 		
+		GL13.glActiveTexture(GL13.GL_TEXTURE0+4);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texidEmissive);
+		ARBShaderObjects.glUniform1iARB(_2dEmissiveMap_loc, 4);	
+
 		ARBShaderObjects.glUniform1fARB(u_SpecularPower_loc, params.specularPower.get());
 		ARBShaderObjects.glUniform1fARB(u_POM_Strength_loc, params.pomStrength.get());
 		ARBShaderObjects.glUniform2fARB(u_TexScale_loc, params.texScaleU.get(), params.texScaleV.get());
@@ -233,5 +260,6 @@ class ShaderBasic extends AbstractShader {
 		texidNormal = create2dTexture(0x7F7FFFFF);
 		texidSpecWeight = create2dTexture(0xFFFFFFFF);
 		texidHeightmap = create2dTexture(0xFFFFFFFF);
+		texidEmissive = create2dTexture(0x00000000);
 	}
 }

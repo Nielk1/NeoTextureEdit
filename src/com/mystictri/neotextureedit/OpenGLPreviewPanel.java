@@ -34,6 +34,7 @@ import engine.parameters.ImageParam;
 import engine.parameters.InfoParam;
 import engine.parameters.IntParam;
 import engine.parameters.Matrix3x3Param;
+import engine.parameters.ParamChangeListener;
 import engine.parameters.TextParam;
 
 
@@ -44,7 +45,7 @@ import engine.parameters.TextParam;
  * @author Holger Dammertz
  *
  */
-public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener, ActionListener {
+public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener, ActionListener, ParamChangeListener {
 	private static final long serialVersionUID = -1758179855070867819L;
 	
 	static final int GLXres = 256+128+128;
@@ -162,6 +163,10 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		AbstractParameterEditor.NAME_WIDTH = 128;
 		for (AbstractParam param : glcanvas.params.m_LocalParameters) {
 			if (param.hidden) continue;
+			if(param.getName() == "Shader")
+			{
+				param.addParamChangeListener(this);
+			}
 			Component c = getEditorForParam(param);
 			if (c != null) {
 				c.setLocation(x, y); y += c.getHeight();
@@ -374,7 +379,17 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		if ((heightmapTexNode != null) && (source == heightmapTexNode.getChannel() || source == null)) glcanvas.updateHeightMap(heightmapTexNode.getChannel());
 		if ((emissiveTexNode != null) && (source == emissiveTexNode.getChannel() || source == null)) glcanvas.updateEmissiveMap(emissiveTexNode.getChannel());
 	}
-	
-	
 
+	int shaderIndex = 0;
+	@Override
+	public void parameterChanged(AbstractParam source) {
+		if(source.getName() == "Shader")
+		{
+			int shader = ((EnumParam)source).getEnumPos();
+			if(shaderIndex != shader) {
+				shaderIndex = shader;
+				createParameterPanel();
+			}
+		}
+	}
 }

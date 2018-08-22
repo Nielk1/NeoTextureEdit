@@ -52,6 +52,8 @@ Release Notes:
  - annotation based filter and pattern discovery
  - added Blend2 Filter with Photoshop like implementations of blends, removed brighten and darken from BlendFilter
  - added emissive map to base shader
+ - implemented shader selection logic
+ - moved emissive logic to new ShaderImproved, reverted shader logic of ShaderBasic
 
 0.6.6-devel:
  - merged several forks, changes:

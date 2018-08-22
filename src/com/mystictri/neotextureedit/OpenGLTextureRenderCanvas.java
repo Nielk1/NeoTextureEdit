@@ -75,7 +75,7 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 	static class GLPreviewParameters extends LocalParameterManager {
 		public EnumParam previewObject = CreateLocalEnumParam("Object", "Square,Cube,Cylinder"); // Sphere
 		// TODO: Programaticly and dynamically set the enum's members
-		public EnumParam shader = CreateLocalEnumParam("Shader", "Basic");
+		public EnumParam shader = CreateLocalEnumParam("Shader", "Basic,Improved");
 		
 		//public FloatParam specularPower = CreateLocalFloatParam("Spec. Power", 20.0f, 0.f, 200.0f);
 		//public FloatParam pomStrength = CreateLocalFloatParam("POM Strength", 0.25f, 0.f, 1.0f).setDefaultIncrement(0.125f);
@@ -99,7 +99,8 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 
 	int activeShader = 0;
 	AbstractShader[] Shaders = new AbstractShader[] {
-		new ShaderBasic()	
+		new ShaderBasic(),
+		new ShaderImproved()
 	};
 
 	
@@ -167,7 +168,10 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		GLU.gluPerspective(60.0f, (float)GLXres/(float)GLYres, 0.1f, 100.0f);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-		Shaders[activeShader].initGLState();
+		for(int i = 0; i < Shaders.length; i++)
+		{
+			Shaders[i].initGLState();
+		}
 	}
 	
 	
@@ -266,34 +270,52 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 
 		eye.mult_add_ip(params.camDist.get(), w);
 		
-		Shaders[activeShader].updateCamera(eye.x, eye.y, eye.z, m_CamONB);
+		for(int i = 0; i < Shaders.length; i++)
+		{
+			Shaders[i].updateCamera(eye.x, eye.y, eye.z, m_CamONB);
+		}
 	}
 	
 	synchronized void render() {
 		// Process the requests made from another thread:
 		
 		if (requestUpdateDiffuse) {
-			Shaders[activeShader].UpdateDiffuse(_updateDiffuse);
+			for(int i = 0; i < Shaders.length; i++)
+			{
+				Shaders[i].UpdateDiffuse(_updateDiffuse);
+			}
 			_updateDiffuse = null;
 			requestUpdateDiffuse = false;
 		}
 		if (requestUpdateNormal) {
-			Shaders[activeShader].UpdateNormal(_updateNormal);
+			for(int i = 0; i < Shaders.length; i++)
+			{
+				Shaders[i].UpdateNormal(_updateNormal);
+			}
 			_updateNormal = null;
 			requestUpdateNormal = false;
 		}
 		if (requestUpdateSpecWeight) {
-			Shaders[activeShader].UpdateSpecWeight(_updateSpecWeight);
+			for(int i = 0; i < Shaders.length; i++)
+			{
+				Shaders[i].UpdateSpecWeight(_updateSpecWeight);
+			}
 			_updateSpecWeight = null;
 			requestUpdateSpecWeight = false;
 		}
 		if (requestUpdateHeightmap) {
-			Shaders[activeShader].UpdateHeightmap(_updateHeightmap);
+			for(int i = 0; i < Shaders.length; i++)
+			{
+				Shaders[i].UpdateHeightmap(_updateHeightmap);
+			}
 			_updateHeightmap = null;
 			requestUpdateHeightmap = false;
 		}
 		if (requestUpdateEmissive) {
-			Shaders[activeShader].UpdateEmissive(_updateEmissive);
+			for(int i = 0; i < Shaders.length; i++)
+			{
+				Shaders[i].UpdateEmissive(_updateEmissive);
+			}
 			_updateEmissive = null;
 			requestUpdateEmissive = false;
 		}
@@ -438,6 +460,10 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 
 	
 	public void parameterChanged(AbstractParam source) {
+		if(source.getName() == "Shader")
+		{
+			activeShader = ((EnumParam)source).getEnumPos();
+		}
 		repaint();
 	}
 
