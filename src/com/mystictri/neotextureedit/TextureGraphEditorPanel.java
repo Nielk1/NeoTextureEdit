@@ -130,6 +130,7 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 	JMenuItem openGLNormalMenuItem;
 	JMenuItem openGLSpecularMenuItem;
 	JMenuItem openGLHeightmapMenuItem;
+	JMenuItem openGLEmissiveMenuItem;
 	
 	JMenu replaceChannelMenu;
 
@@ -319,6 +320,7 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 			openGLNormalMenuItem = createChannelPopupSubMenuItem(opengl, "Set as Normal");
 			openGLSpecularMenuItem = createChannelPopupSubMenuItem(opengl, "Set as Specular");
 			openGLHeightmapMenuItem = createChannelPopupSubMenuItem(opengl, "Set as Height");
+			openGLEmissiveMenuItem = createChannelPopupSubMenuItem(opengl, "Set as Emissive");
 		}
 
 		deleteChannelMenuItem = createChannelPopupMenuItem(selectedChannelPopupMenu, "Delete");
@@ -535,6 +537,9 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 						repaint();
 					} else if (e.getSource() == openGLHeightmapMenuItem) {
 						TextureEditor.INSTANCE.m_OpenGLPreviewPanel.setHeightmapTextureNode(n);
+						repaint();
+					} else if (e.getSource() == openGLEmissiveMenuItem) {
+						TextureEditor.INSTANCE.m_OpenGLPreviewPanel.setEmissiveTextureNode(n);
 						repaint();
 					}
 				} else Logger.logWarning(this, "Incomplete channel for preview."); 

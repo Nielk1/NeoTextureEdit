@@ -51,6 +51,7 @@ Release Notes:
  - added maven
  - annotation based filter and pattern discovery
  - added Blend2 Filter with Photoshop like implementations of blends, removed brighten and darken from BlendFilter
+ - added emissive map to base shader
 
 0.6.6-devel:
  - merged several forks, changes:

@@ -57,6 +57,8 @@ abstract class AbstractShader {
 
 	public abstract void UpdateHeightmap(Channel _updateHeightmap);
 
+	public abstract void UpdateEmissive(Channel _updateEmissive);
+	
 	public abstract void render1();
 	public abstract void render2();
 

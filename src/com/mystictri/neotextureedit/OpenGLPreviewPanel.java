@@ -74,6 +74,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		createPopupMenuItem(menu, "Normal", "ClearNormal");
 		createPopupMenuItem(menu, "Specular", "ClearSpecular");
 		createPopupMenuItem(menu, "Heightmap", "ClearHeightmap");
+		createPopupMenuItem(menu, "Emissive", "ClearEmissive");
 	}
 	
 	private JMenuItem createPopupMenuItem(JMenu menu, String name, String action) {
@@ -112,8 +113,10 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		} else if (c.equals("ClearHeightmap")) {
 			setHeightmapTextureNode(null);
 			getParent().repaint();
+		} else if (c.equals("ClearEmissive")) {
+			setEmissiveTextureNode(null);
+			getParent().repaint();
 		}
-		
 	}
 	
 	
@@ -201,6 +204,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		token(g, ox, oy, 1, normalTexNode, "N");
 		token(g, ox, oy, 2, specWeightTexNode, "S");
 		token(g, ox, oy, 3, heightmapTexNode, "H");
+		token(g, ox, oy, 4, emissiveTexNode, "E");
 	}
 	
 	
@@ -215,6 +219,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		w.write(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.indexOf(normalTexNode) + " ");
 		w.write(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.indexOf(specWeightTexNode) + " ");
 		w.write(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.indexOf(heightmapTexNode) + " ");
+		w.write(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.indexOf(emissiveTexNode) + " ");
 		
 		if (TextureEditor.GL_ENABLED) {
 			for (AbstractParam p : glcanvas.params.m_LocalParameters) {
@@ -242,6 +247,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		if ((idx = s.nextInt())!= -1) setNormalTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
 		if ((idx = s.nextInt())!= -1) setSpecWeightTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
 		if ((idx = s.nextInt())!= -1) setHeightmapTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
+		if ((idx = s.nextInt())!= -1) setEmissiveTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
 		
 		String t;
 		while (!(t = s.next()).equals("endglpreview")) {
@@ -294,6 +300,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		setNormalTextureNode(null);
 		setSpecWeightTextureNode(null);
 		setHeightmapTextureNode(null);
+		setEmissiveTextureNode(null);
 	}
 	
 	
@@ -301,6 +308,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 	TextureGraphNode normalTexNode;
 	TextureGraphNode specWeightTexNode;
 	TextureGraphNode heightmapTexNode;
+	TextureGraphNode emissiveTexNode;
 	
 	private final TextureGraphNode setTexNode(TextureGraphNode o, TextureGraphNode n) {
 		if (o != null) o.getChannel().removeChannelChangeListener(this);
@@ -319,6 +327,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		if (node == normalTexNode) setNormalTextureNode(null);
 		if (node == specWeightTexNode) setSpecWeightTextureNode(null);
 		if (node == heightmapTexNode) setHeightmapTextureNode(null);
+		if (node == emissiveTexNode) setEmissiveTextureNode(null);
 	}
 	
 	
@@ -350,6 +359,12 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		else glcanvas.updateHeightMap(null);
 	}
 
+	public void setEmissiveTextureNode(TextureGraphNode c) {
+		emissiveTexNode = setTexNode(emissiveTexNode, c); 
+		if (!TextureEditor.GL_ENABLED) return;
+		if (emissiveTexNode != null) channelChanged(emissiveTexNode.getChannel());
+		else glcanvas.updateEmissiveMap(null);
+	}
 	
 	public void channelChanged(Channel source) {
 		if (!TextureEditor.GL_ENABLED) return;
@@ -357,6 +372,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		if ((normalTexNode != null) && (source == normalTexNode.getChannel() || source == null)) glcanvas.updateNormalMap(normalTexNode.getChannel());
 		if ((specWeightTexNode != null) && (source == specWeightTexNode.getChannel() || source == null)) glcanvas.updateSpecWeightMap(specWeightTexNode.getChannel());
 		if ((heightmapTexNode != null) && (source == heightmapTexNode.getChannel() || source == null)) glcanvas.updateHeightMap(heightmapTexNode.getChannel());
+		if ((emissiveTexNode != null) && (source == emissiveTexNode.getChannel() || source == null)) glcanvas.updateEmissiveMap(emissiveTexNode.getChannel());
 	}
 	
 	

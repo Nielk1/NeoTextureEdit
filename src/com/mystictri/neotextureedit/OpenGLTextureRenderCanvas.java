@@ -175,10 +175,12 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 	boolean requestUpdateNormal = false;
 	boolean requestUpdateSpecWeight = false;
 	boolean requestUpdateHeightmap = false;
+	boolean requestUpdateEmissive = false;
 	Channel _updateDiffuse = null;
 	Channel _updateNormal = null;
 	Channel _updateSpecWeight = null;
 	Channel _updateHeightmap = null;
+	Channel _updateEmissive = null;
 	
 	public synchronized void updateDiffuseMap(Channel c) {
 		if (c != null && !c.chechkInputChannels()) {
@@ -224,6 +226,16 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		repaint();
 	}
 	
+	public synchronized void updateEmissiveMap(Channel c) {
+		if (c != null && !c.chechkInputChannels()) {
+			Logger.logWarning(this, "Incomplete input channel in emissive map.");
+			_updateEmissive = null;
+		} else {
+			_updateEmissive = c;
+		}
+		requestUpdateEmissive = true;
+		repaint();
+	}
 	
 	public FloatBuffer m_CamONB = Utils.allocFloatBuffer(9);
 	
@@ -280,7 +292,11 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 			_updateHeightmap = null;
 			requestUpdateHeightmap = false;
 		}
-
+		if (requestUpdateEmissive) {
+			Shaders[activeShader].UpdateEmissive(_updateEmissive);
+			_updateEmissive = null;
+			requestUpdateEmissive = false;
+		}
 		
 		Shaders[activeShader].render1();
 		updateCamera();
