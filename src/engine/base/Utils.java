@@ -27,6 +27,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -445,6 +447,11 @@ public final class Utils {
 		List<String> filelist;
 		String s;
 
+		// TODO: check how this acts on non-windows OS
+		Path homePath = Paths.get(home.getAbsolutePath());
+		Path fPath = Paths.get(f.getAbsolutePath());
+		if(homePath.getRoot() != fPath.getRoot()) return f.getAbsolutePath();
+		
 		homelist = getPathList(home);
 		filelist = getPathList(f);
 		s = matchPathLists(homelist, filelist);

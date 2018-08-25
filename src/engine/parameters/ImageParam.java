@@ -21,6 +21,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -44,7 +46,7 @@ public class ImageParam extends AbstractParam {
 	/**
 	 * Saves only the relative path (relative to the path of the opened .tgr graph)
 	 * to the image not the image itself. To store the path
-	 * all spaces are replaced with colons (:) for easier string parsing.
+	 * quotes are used, which must be properly parsed on the other side.
 	 */
 	public void save(Writer w) throws IOException {
 		String relativePath;
@@ -52,16 +54,30 @@ public class ImageParam extends AbstractParam {
 		if (TextureEditor.INSTANCE.m_CurrentFile != null) relativePath = Utils.getRelativePath(TextureEditor.INSTANCE.m_CurrentFile.getParentFile(), new File(filename));
 		else relativePath = filename;
 		
-		w.write(relativePath.replace(' ', ':') + " ");
+		w.write("\"" + relativePath + "\"" + " ");
 	}
 
+	// https://stackoverflow.com/questions/12360694/java-scanner-delimit-by-spaces-unless-quotation-marks-are-present
 	/**
 	 * Expects as next token the filename. Replaces all occurences of a colon
 	 * in the filename with a space and then tries to load the image from disk.
 	 */
 	public void load(Scanner s) {
-		String path = s.next().replace(':', ' ');
-		if (TextureEditor.INSTANCE.m_CurrentFile != null) path = TextureEditor.INSTANCE.m_CurrentFile.getParent() + File.separator + path;
+		String rx = "[^\"\\s]+|\"(\\\\.|[^\\\\\"])*\"";
+		//String path = s.next();
+		//String path = s.findInLine(rx);
+		String path = s.next(rx);
+		if(path.startsWith("\"")) {
+			path = path.substring(1, path.length() - 1);
+		} else {
+			path = path.replace(':', ' '); // legacy paths
+		}
+		if (TextureEditor.INSTANCE.m_CurrentFile != null){
+			File file = new File(path); 
+			if(!file.isAbsolute()) {
+				path = TextureEditor.INSTANCE.m_CurrentFile.getParent() + File.separator + path;
+			}
+		}
 		System.out.println(path);
 		loadImage(path);
 	}
