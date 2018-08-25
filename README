@@ -56,6 +56,7 @@ Release Notes:
  - moved emissive logic to new ShaderImproved, reverted shader logic of ShaderBasic
  - PatternBitmap now uses quoted paths during serialization
  - PatternBitmap now properly handles paths in a different root
+ - Shader transparency now works
 
 0.6.6-devel:
  - merged several forks, changes:

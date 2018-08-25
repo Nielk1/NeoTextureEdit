@@ -119,7 +119,7 @@ class ShaderBasic extends AbstractShader {
 		"	if (diff < 0.0) diff = 0.0; " +
 		"	diff = min(diff+u_Ambient, 1.0); " +
 		"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0) * diff + spec; " +
- 		"	gl_FragColor = color; " +
+ 		"	gl_FragColor = vec4(color.xyz, 1.0); " +
 		"}";
 	
 	@Override

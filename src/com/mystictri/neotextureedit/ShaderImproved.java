@@ -137,8 +137,10 @@ class ShaderImproved extends AbstractShader {
 		//"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0); " +
 		//"	color += vec4(emssvtxt.x, emssvtxt.y, emssvtxt.z, 0.0) * (emssvtxt.a); " +
 		
-		"	vec4 color = mix(texture2D(_2dTex0, pos.xy),emssvtxt,emssvtxt.a) * diff + spec; " +
+		"	vec4 difftxt = texture2D(_2dTex0, pos.xy); " +
+		"	vec4 color = mix(difftxt,emssvtxt,emssvtxt.a) * diff + spec; " +
 		//"	vec4 color = vec4(texture2D(_2dTex0, pos.xy).xyz, 0.0) * diff + spec; " +
+		"	color = vec4(color.xyz, max(difftxt.a,emssvtxt.a)); " + // need this else spec affects alpha
 		"	gl_FragColor = color; " +
 		"}";
 	
@@ -163,7 +165,8 @@ class ShaderImproved extends AbstractShader {
 	
 	@Override
 	public void UpdateDiffuse(Channel _updateDiffuse) {
-		if (_updateDiffuse != null) update2dTexture(ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 0), texidDiffuse);
+		//if (_updateDiffuse != null) update2dTexture(ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 0), texidDiffuse);
+		if (_updateDiffuse != null) update2dTexture(ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 3), texidDiffuse);
 		else update2dTexture_ConstanctColor(0x7F7FFFFF, texidDiffuse);
 	}
 		

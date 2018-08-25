@@ -162,6 +162,9 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		//GL11.glClearColor(62.0f / 100.0f, 77.0f / 100.0f, 100.0f / 100.0f, 1.0f);
 		GL11.glClearColor(64.0f / 255.0f, 64.0f / 255.0f, 64.0f / 255.0f, 1.0f);
 
+		//attempting to add transparency
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
