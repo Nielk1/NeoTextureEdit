@@ -279,49 +279,118 @@ class OpenGLTextureRenderCanvas extends AWTGLCanvas implements Runnable, MouseLi
 		}
 	}
 	
+	RenderTextureWorker worker = new RenderTextureWorker("OpenGLTextureRenderCanvas-RenderTextureWorker");
+	
 	synchronized void render() {
 		// Process the requests made from another thread:
 		
 		if (requestUpdateDiffuse) {
+			if (worker != null) {
+				worker.purgeQueue("Diffuse");
+			}
 			for(int i = 0; i < Shaders.length; i++)
 			{
-				Shaders[i].UpdateDiffuse(_updateDiffuse);
+				if(ChannelUtils.useCache == UseCache.Thread) {
+					worker.AddTask(new RenderTextureWorkerTask(Shaders[i], "Diffuse", _updateDiffuse));
+				} else {
+					Shaders[i].UpdateDiffuse(_updateDiffuse);
+				}
 			}
 			_updateDiffuse = null;
 			requestUpdateDiffuse = false;
 		}
 		if (requestUpdateNormal) {
+			if (worker != null) {
+				worker.purgeQueue("Normal");
+			}
 			for(int i = 0; i < Shaders.length; i++)
 			{
-				Shaders[i].UpdateNormal(_updateNormal);
+				if(ChannelUtils.useCache == UseCache.Thread) {
+					worker.AddTask(new RenderTextureWorkerTask(Shaders[i], "Normal", _updateNormal));
+				} else {
+					Shaders[i].UpdateNormal(_updateNormal);
+				}
 			}
 			_updateNormal = null;
 			requestUpdateNormal = false;
 		}
 		if (requestUpdateSpecWeight) {
+			if (worker != null) {
+				worker.purgeQueue("SpecWeight");
+			}
 			for(int i = 0; i < Shaders.length; i++)
 			{
-				Shaders[i].UpdateSpecWeight(_updateSpecWeight);
+				if(ChannelUtils.useCache == UseCache.Thread) {
+					worker.AddTask(new RenderTextureWorkerTask(Shaders[i], "SpecWeight", _updateSpecWeight));
+				} else {
+					Shaders[i].UpdateSpecWeight(_updateSpecWeight);
+				}
 			}
 			_updateSpecWeight = null;
 			requestUpdateSpecWeight = false;
 		}
 		if (requestUpdateHeightmap) {
+			if (worker != null) {
+				worker.purgeQueue("Heightmap");
+			}
 			for(int i = 0; i < Shaders.length; i++)
 			{
-				Shaders[i].UpdateHeightmap(_updateHeightmap);
+				if(ChannelUtils.useCache == UseCache.Thread) {
+					worker.AddTask(new RenderTextureWorkerTask(Shaders[i], "Heightmap", _updateHeightmap));
+				} else {
+					Shaders[i].UpdateHeightmap(_updateHeightmap);
+				}
 			}
 			_updateHeightmap = null;
 			requestUpdateHeightmap = false;
 		}
 		if (requestUpdateEmissive) {
+			if (worker != null) {
+				worker.purgeQueue("Emissive");
+			}
 			for(int i = 0; i < Shaders.length; i++)
 			{
-				Shaders[i].UpdateEmissive(_updateEmissive);
+				if(ChannelUtils.useCache == UseCache.Thread) {
+					worker.AddTask(new RenderTextureWorkerTask(Shaders[i], "Emissive", _updateEmissive));
+				} else {
+					Shaders[i].UpdateEmissive(_updateEmissive);
+				}
 			}
 			_updateEmissive = null;
 			requestUpdateEmissive = false;
 		}
+		
+		
+		
+		{
+			RenderTextureWorkerTask tsk = null;
+			while((tsk = worker.Get("Diffuse")) != null) {
+				tsk.shader.UpdateDiffuse(tsk.channel);
+			}
+		}
+		{
+			RenderTextureWorkerTask tsk = null;
+			while((tsk = worker.Get("Normal")) != null)
+				tsk.shader.UpdateNormal(tsk.channel);
+		}
+		{
+			RenderTextureWorkerTask tsk = null;
+			while((tsk = worker.Get("SpecWeight")) != null)
+				tsk.shader.UpdateSpecWeight(tsk.channel);
+		}
+		{
+			RenderTextureWorkerTask tsk = null;
+			while((tsk = worker.Get("Heightmap")) != null)
+				tsk.shader.UpdateHeightmap(tsk.channel);
+		}
+		{
+			RenderTextureWorkerTask tsk = null;
+			while((tsk = worker.Get("Emissive")) != null)
+				tsk.shader.UpdateEmissive(tsk.channel);
+		}
+		
+		
+		
 		
 		Shaders[activeShader].render1();
 		updateCamera();

@@ -57,6 +57,7 @@ Release Notes:
  - PatternBitmap now uses quoted paths during serialization
  - PatternBitmap now properly handles paths in a different root
  - Shader transparency now works
+ - New threaded cache and render mode, node names will turn red if waiting for a threaded update
 
 0.6.6-devel:
  - merged several forks, changes:

@@ -1,6 +1,8 @@
 package com.mystictri.neotextureedit;
 
 import java.awt.image.BufferedImage;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import engine.base.Logger;
 import engine.base.Utils;
@@ -17,8 +19,8 @@ import engine.graphics.synthesis.texture.CacheTileManager.TileCacheEntry;
  *
  */
 public final class ChannelUtils {
-	public static boolean useCache = true;
-	
+	//public static boolean useCache = true;
+	public static UseCache useCache = UseCache.Yes;
 	
 	public static final int minCacheSize = 64;
 
@@ -56,7 +58,7 @@ public final class ChannelUtils {
 		long time = System.currentTimeMillis();
 
 		TileCacheEntry tce = null;
-		if (useCache && (img.getWidth() >= minCacheSize && img.getHeight() >= minCacheSize)) {
+		if ((useCache == UseCache.Yes || useCache == UseCache.Thread) && (img.getWidth() >= minCacheSize && img.getHeight() >= minCacheSize)) {
 			 tce = CacheTileManager.getCache(c, px, py, img.getWidth(), img.getHeight(), globalXres, globalYres);
 		}
 		

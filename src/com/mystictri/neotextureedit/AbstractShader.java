@@ -50,14 +50,16 @@ abstract class AbstractShader {
 	}
 
 	public abstract void UpdateDiffuse(Channel _updateDiffuse);
-
 	public abstract void UpdateNormal(Channel _updateNormal);
-
 	public abstract void UpdateSpecWeight(Channel _updateSpecWeight);
-
 	public abstract void UpdateHeightmap(Channel _updateHeightmap);
-
 	public abstract void UpdateEmissive(Channel _updateEmissive);
+
+	public abstract BufferedImage GetBufferedImageDiffuse(Channel _updateDiffuse);
+	public abstract BufferedImage GetBufferedImageNormal(Channel _updateNormal);
+	public abstract BufferedImage GetBufferedImageSpecWeight(Channel _updateSpecWeight);
+	public abstract BufferedImage GetBufferedImageHeightmap(Channel _updateHeightmap);
+	public abstract BufferedImage GetBufferedImageEmissive(Channel _updateEmissive);
 	
 	public abstract void render1();
 	public abstract void render2();

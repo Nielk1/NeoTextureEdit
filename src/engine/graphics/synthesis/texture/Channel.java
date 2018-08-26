@@ -17,12 +17,20 @@
 
 package engine.graphics.synthesis.texture;
 
+import java.awt.List;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Vector;
+
+import com.mystictri.neotextureedit.CacheWorker;
+import com.mystictri.neotextureedit.CacheWorkerTask;
+import com.mystictri.neotextureedit.ChannelUtils;
+import com.mystictri.neotextureedit.UseCache;
 
 import engine.base.FMath;
 import engine.base.Logger;
@@ -91,6 +99,11 @@ public abstract class Channel extends LocalParameterManager {
 		}
 	}
 
+	
+	CacheWorker worker = new CacheWorker(getName() + "-" + System.identityHashCode(this) + "-RenderTextureWorker");
+
+	public boolean threadUpdatePending = false;
+	
 	/**
 	 * We just notify all channel change listener if a parameter changed. This
 	 * method can also be called with source == null; it then means that a
@@ -101,11 +114,32 @@ public abstract class Channel extends LocalParameterManager {
 	public void parameterChanged(AbstractParam source) {
 		CacheTileManager.setEntrysDirty(this);
 		
-		for (ChannelChangeListener c : changeListener) {
-			c.channelChanged(this);
+		this.threadUpdatePending = false;
+		
+		if (worker != null) {
+			worker.purgeQueue();
+		}
+		
+		if(ChannelUtils.useCache == UseCache.Thread && worker != null) {
+			for (ChannelChangeListener c : changeListener) {
+				CacheWorkerTask task = new CacheWorkerTask(this, c);
+				this.threadUpdatePending = true;
+				worker.AddTask(task);
+			}
+		} else {
+			this.threadUpdatePending = false;
+			for (ChannelChangeListener c : changeListener) {
+				c.channelChanged(this);
+			}
 		}
 	}
 
+	public void close() {
+		worker.stop = true;
+		worker.purgeQueue();
+		worker = null;
+	}
+	
 	protected Channel() {
 	}
 
@@ -239,6 +273,7 @@ public abstract class Channel extends LocalParameterManager {
 			name = name.replace("FilterBrightnessContrast", "FilterColorCorrect");
 			
 			Channel c = (Channel) Class.forName(name).newInstance();
+
 			// Logger.log(null, "loadChannel " + c);
 
 			String t;

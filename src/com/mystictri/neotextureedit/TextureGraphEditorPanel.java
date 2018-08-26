@@ -363,6 +363,7 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 			Channel chan = null;
 			try {
 				chan = (Channel) c.newInstance();
+				chan.close(); // TODO: Make this less hacky
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
@@ -387,9 +388,11 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 			String name = TextureEditor.getFullPath(c);
 			if (!name.endsWith(".png"))
 				name += ".png";
-			boolean useCache = ChannelUtils.useCache;
+			//boolean useCache = ChannelUtils.useCache;
+			UseCache useCache = ChannelUtils.useCache;
 			try {
-				ChannelUtils.useCache = false;
+				//ChannelUtils.useCache = false;
+				ChannelUtils.useCache = UseCache.No;
 				ImageIO.write(ChannelUtils.createAndComputeImage(graph.selectedNodes.lastElement().getChannel(), resX, resY, TextureEditor.INSTANCE.m_ProgressDialog, 3), "png", new File(name));
 				Logger.log(this, "Saved image to " + name + ".");
 			} catch (IOException exc) {
@@ -717,7 +720,12 @@ public final class TextureGraphEditorPanel extends JPanel implements MouseListen
 		
 		g.setFont(font);
 		
-		g.setColor(Color.white);
+		
+		if (node.getChannel().threadUpdatePending) {
+			g.setColor(Color.red);
+		} else {
+			g.setColor(Color.white);
+		}
 		g.drawString(node.getChannel().getName(), x+2, y+12+8);
 
 		g.setColor(col_NodeBorder);

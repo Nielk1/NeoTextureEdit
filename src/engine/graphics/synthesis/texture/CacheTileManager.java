@@ -1,6 +1,7 @@
 package engine.graphics.synthesis.texture;
 
 import java.nio.FloatBuffer;
+import java.util.Collection;
 import java.util.HashMap;
 
 import engine.base.FMath;
@@ -212,34 +213,35 @@ public final class CacheTileManager {
 			e.setDirty();
 		}
 	}
-
 	
 //	public static void removeChannel(Channel c) {
 //		tiles.put(c, null);
 //	}
 
 	public static TileCacheEntry getCache(Channel c, int px, int py, int xres, int yres, int globalXres, int globalYres) {
-		HashMap<ResolutionTag, TileCacheEntry> channelMap = c.cacheEntries;
-		if (channelMap == null) {
-			channelMap = new HashMap<ResolutionTag, TileCacheEntry>();
-			c.cacheEntries = channelMap;
-			//tiles.put(c, channelMap);
+		synchronized(c) {
+			HashMap<ResolutionTag, TileCacheEntry> channelMap = c.cacheEntries;
+			if (channelMap == null) {
+				channelMap = new HashMap<ResolutionTag, TileCacheEntry>();
+				c.cacheEntries = channelMap;
+				//tiles.put(c, channelMap);
+			}
+			
+			//System.out.format("Cache: %d %d %d %d %n", xres, yres, globalXres, globalYres);
+	
+			ResolutionTag tag = new ResolutionTag(xres, yres, globalXres, globalYres);
+			TileCacheEntry tile = channelMap.get(tag);
+			//System.out.println(tile);
+			if (tile == null) {
+				int border = 0;
+				tile = new TileCacheEntry(c, xres, yres, px, py, border, globalXres, globalYres);
+				channelMap.put(tag, tile);
+			}
+	
+			tile.relocateCache(px, py);
+			tile.compute();
+			return tile;
 		}
-		
-		//System.out.format("Cache: %d %d %d %d %n", xres, yres, globalXres, globalYres);
-
-		ResolutionTag tag = new ResolutionTag(xres, yres, globalXres, globalYres);
-		TileCacheEntry tile = channelMap.get(tag);
-		//System.out.println(tile);
-		if (tile == null) {
-			int border = 0;
-			tile = new TileCacheEntry(c, xres, yres, px, py, border, globalXres, globalYres);
-			channelMap.put(tag, tile);
-		}
-
-		tile.relocateCache(px, py);
-		tile.compute();
-		return tile;
 	}
 
 }

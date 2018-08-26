@@ -1,5 +1,6 @@
 package com.mystictri.neotextureedit;
 
+import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.ARBShaderObjects;
@@ -192,6 +193,31 @@ class ShaderImproved extends AbstractShader {
 	public void UpdateEmissive(Channel _updateEmissive) {
 		if (_updateEmissive != null) update2dTexture(ChannelUtils.createAndComputeImage(_updateEmissive, TEXTURE_RESX, TEXTURE_RESY, null, 3), texidEmissive);
 		else update2dTexture_ConstanctColor(0x00000000, texidEmissive);
+	}
+
+	@Override
+	public BufferedImage GetBufferedImageDiffuse(Channel _updateDiffuse) {
+		return ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 3);
+	}
+		
+	@Override
+	public BufferedImage GetBufferedImageNormal(Channel _updateNormal) {
+		return ChannelUtils.createAndComputeImage(_updateNormal, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+	}
+	
+	@Override
+	public BufferedImage GetBufferedImageSpecWeight(Channel _updateSpecWeight) {
+		return ChannelUtils.createAndComputeImage(_updateSpecWeight, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+	}
+		
+	@Override
+	public BufferedImage GetBufferedImageHeightmap(Channel _updateHeightmap) {
+		return ChannelUtils.createAndComputeImage(_updateHeightmap, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+	}
+	
+	@Override
+	public BufferedImage GetBufferedImageEmissive(Channel _updateEmissive) {
+		return ChannelUtils.createAndComputeImage(_updateEmissive, TEXTURE_RESX, TEXTURE_RESY, null, 3);
 	}
 
 	@Override

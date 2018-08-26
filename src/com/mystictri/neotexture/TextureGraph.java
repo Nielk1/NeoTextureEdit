@@ -94,6 +94,9 @@ public final class TextureGraph {
 	
 	public void deleteFullGraph() {
 		removeConnections(allConnections);
+		for(TextureGraphNode node : allNodes) {
+			node.texChannel.close();
+		}
 		selectedNodes.clear();
 		allNodes.clear();
 
@@ -142,6 +145,7 @@ public final class TextureGraph {
 	public void _deleteNode(TextureGraphNode node, boolean removeFromSelected) {
 		removeConnections(getAllConnectionsAtOutputPoint(node.getOutputConnectionPoint()));
 		removeConnections(getConnectionsAtAllInputPoints(node));
+		node.texChannel.close();
 		allNodes.remove(node);
 		if (removeFromSelected) selectedNodes.remove(node);
 		if (graphListener != null) graphListener.nodeDeleted(node);

@@ -51,6 +51,7 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -65,6 +66,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
@@ -113,7 +115,7 @@ public class TextureEditor implements ActionListener {
 	public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
 
 	Preferences preferences = Preferences.userRoot().node("com.mystictri.NeoTextureEdit");
-
+	
 	static final String programVersionNumber = TextureGenerator.getVersion();
 
 	// String m_CurrentFileName = null;
@@ -206,6 +208,9 @@ public class TextureEditor implements ActionListener {
 			try {
 				Class<?> c = Class.forName(className);
 				Object o = c.newInstance();
+				if (o instanceof Channel) {
+					((Channel)o).close(); // TODO: Make this less hacky
+				}
 				if (o instanceof Pattern) {
 					if (c != Pattern.class)
 						allPatterns.add(c);
@@ -324,6 +329,7 @@ public class TextureEditor implements ActionListener {
 				int numNodes = s.nextInt();
 				for (int i = 0; i < numNodes; i++) {
 					Channel c = Channel.loadChannel(s);
+					c.close(); // TODO: Make this less hacky
 					if (c instanceof Pattern) {
 						addPatternPreset((Pattern) c);
 					} else {
@@ -601,6 +607,34 @@ public class TextureEditor implements ActionListener {
 		ret.setSelected(isSelected);
 		return ret;
 	}
+	
+	// TODO: make sure array counts match
+	JMenuItem createRadioButtonMenuItem(JMenu menu, String name, char mnemonic, KeyStroke ks, String[] options, String[] actions, char[] mnemonics, KeyStroke[] kss, int isSelected) {
+		JMenu ret;
+		ret = new JMenu(name);
+		ret.addActionListener(this);
+		ret.setMnemonic(mnemonic);
+		
+		ButtonGroup group = new ButtonGroup();
+		for(int i = 0; i < options.length; i++) {
+			JRadioButtonMenuItem retC;
+			retC = new JRadioButtonMenuItem(options[i]);
+			retC.addActionListener(this);
+			retC.setActionCommand(actions[i]);
+			retC.setMnemonic(mnemonics[i]);
+			group.add(retC);
+			menu.add(retC);
+			if (kss != null && kss[i] != null)
+				retC.setAccelerator(kss[i]);
+			retC.setSelected(i == isSelected);
+			ret.add(retC);
+		}
+		
+		menu.add(ret);
+		if (ks != null)
+			ret.setAccelerator(ks);
+		return ret;
+	}
 
 	void createMainMenu() {
 		int modifierMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -629,7 +663,9 @@ public class TextureEditor implements ActionListener {
 		JMenu options = new JMenu("Options");
 		options.setMnemonic('O');
 		m_MainMenuBar.add(options);
-		createCheckboxMenuItem(options, "Use Cache", "options_toggle_usecache", 'C', null, ChannelUtils.useCache);
+		//createCheckboxMenuItem(options, "Use Cache", "options_toggle_usecache", 'C', null, ChannelUtils.useCache);
+		createRadioButtonMenuItem(options, "Use Cache", 'C', null, new String[]{ "No", "Yes", "Threaded" }, new String[]{ "options_usecache_no", "options_usecache_yes", "options_usecache_thread" }, new char[] {'N','Y','T'}, null, 1);
+		
 		//createCheckboxMenuItem(options, "Normal FlipX", "options_toggle_normalFlipX", 'X', null, FilterNormalMap.ms_FlipX);
 		//createCheckboxMenuItem(options, "Normal FlipY", "options_toggle_normalFlipY", 'Y', null, FilterNormalMap.ms_FlipY);
 
@@ -724,6 +760,7 @@ public class TextureEditor implements ActionListener {
 				m_OpenGLPreviewPanel.setVisible(!m_OpenGLPreviewPanel.isVisible());
 				m_CenterPanel.validate();
 			}
+		/*
 		} else if (c.equals("options_toggle_usecache")) {
 			ChannelUtils.useCache = !ChannelUtils.useCache;
 			m_GraphDrawPanel.updateAll();
@@ -739,6 +776,22 @@ public class TextureEditor implements ActionListener {
 		//	m_GraphDrawPanel.updateAll();
 		//	if (GL_ENABLED)
 		//		m_OpenGLPreviewPanel.channelChanged(null);
+		*/
+		} else if (c.equals("options_usecache_no")) {
+			ChannelUtils.useCache = UseCache.No;
+			m_GraphDrawPanel.updateAll();
+			if (GL_ENABLED)
+				m_OpenGLPreviewPanel.channelChanged(null);
+		} else if (c.equals("options_usecache_yes")) {
+			ChannelUtils.useCache = UseCache.Yes;
+			m_GraphDrawPanel.updateAll();
+			if (GL_ENABLED)
+				m_OpenGLPreviewPanel.channelChanged(null);
+		} else if (c.equals("options_usecache_thread")) {
+			ChannelUtils.useCache = UseCache.Thread;
+			m_GraphDrawPanel.updateAll();
+			if (GL_ENABLED)
+				m_OpenGLPreviewPanel.channelChanged(null);
 		} else if (c.equals("help_dialog")) {
 			JOptionPane.showMessageDialog(null, help_message, "NeoTextureEdit - Help", JOptionPane.PLAIN_MESSAGE);
 		} else if (c.equals("about_dialog")) {
@@ -834,7 +887,8 @@ public class TextureEditor implements ActionListener {
 			System.exit(0);
 		}
 
-		ChannelUtils.useCache = false;
+		//ChannelUtils.useCache = false;
+		ChannelUtils.useCache = UseCache.No;
 
 		for (String filename : commandLineOptions.allFileNames) {
 			TextureGraphEditorPanel te = new TextureGraphEditorPanel();
@@ -872,7 +926,9 @@ public class TextureEditor implements ActionListener {
 		m_MainFrame = new JFrame();
 
 		setTitle(title);
-		m_MainFrame.setIconImage(ChannelUtils.createAndComputeImage(new PatternChecker(2, 2), 16, 16, null, 0));
+		PatternChecker tmpChecker = new PatternChecker(2, 2);
+		tmpChecker.close(); // TODO: Make this less hacky
+		m_MainFrame.setIconImage(ChannelUtils.createAndComputeImage(tmpChecker, 16, 16, null, 0));
 		m_MainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				Window win = e.getWindow();
