@@ -172,22 +172,26 @@ class ShaderBasic extends AbstractShader {
 
 	@Override
 	public BufferedImage GetBufferedImageDiffuse(Channel _updateDiffuse) {
-		return ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		if (_updateDiffuse != null) return ChannelUtils.createAndComputeImage(_updateDiffuse, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		return null;
 	}
 		
 	@Override
 	public BufferedImage GetBufferedImageNormal(Channel _updateNormal) {
-		return ChannelUtils.createAndComputeImage(_updateNormal, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		if (_updateNormal != null) return ChannelUtils.createAndComputeImage(_updateNormal, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		return null;
 	}
 	
 	@Override
 	public BufferedImage GetBufferedImageSpecWeight(Channel _updateSpecWeight) {
-		return ChannelUtils.createAndComputeImage(_updateSpecWeight, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		if (_updateSpecWeight != null) return ChannelUtils.createAndComputeImage(_updateSpecWeight, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		return null;
 	}
 		
 	@Override
 	public BufferedImage GetBufferedImageHeightmap(Channel _updateHeightmap) {
-		return ChannelUtils.createAndComputeImage(_updateHeightmap, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		if (_updateHeightmap != null) return ChannelUtils.createAndComputeImage(_updateHeightmap, TEXTURE_RESX, TEXTURE_RESY, null, 0);
+		return null;
 	}
 	
 	@Override

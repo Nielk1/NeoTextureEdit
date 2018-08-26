@@ -252,7 +252,7 @@ public class OpenGLPreviewPanel extends JPanel implements ChannelChangeListener,
 		if ((idx = s.nextInt())!= -1) setNormalTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
 		if ((idx = s.nextInt())!= -1) setSpecWeightTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
 		if ((idx = s.nextInt())!= -1) setHeightmapTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
-		if ((idx = s.nextInt())!= -1) setEmissiveTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx));
+		if (s.hasNextInt()) if ((idx = s.nextInt())!= -1) setEmissiveTextureNode(TextureEditor.INSTANCE.m_GraphDrawPanel.graph.allNodes.get(idx)); // if emissive index exists
 		
 		String t;
 		while (!(t = s.next()).equals("endglpreview")) {
