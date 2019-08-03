@@ -407,7 +407,8 @@ public class GradientEditorPanel extends JPanel implements MouseMotionListener, 
 					// chooser:
 					Color c = colorChooser.getColorSelection(m.color);
 					m_ActiveGradient.updateColorRGB(m.index, c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f);
-					if ((c.getRed() != m.color.getRed()) || (c.getGreen() != m.color.getGreen()) || (c.getBlue() != m.color.getBlue()))
+					m_ActiveGradient.updateAlpha(m.index, c.getAlpha() / 255.0f);
+					if ((c.getRed() != m.color.getRed()) || (c.getGreen() != m.color.getGreen()) || (c.getBlue() != m.color.getBlue()) || (c.getAlpha() != m.color.getAlpha()))
 						m_ColorGradientParam.notifyParamChangeListener();
 					m.color = c;
 					refreshGradientImage();
