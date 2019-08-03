@@ -295,6 +295,10 @@ public class GradientEditorPanel extends JPanel implements MouseMotionListener, 
 			ColorMarker m = markers.get(i);
 			g.setColor(m.color);
 			g.fillRect(m.x - m.width2, m.y - m.height2, m.width2 * 2, m.height2 * 2);
+			if(m.color.getAlpha() < 255) {
+				g.setColor(new Color(m.color.getRGB(), false));
+				g.drawRect(m.x - m.width2, m.y - m.height2, m.width2 * 2, m.height2 * 2);
+			}
 		}
 		if (dragMarker != null) {
 			if (alphaDrag) {
